@@ -4,10 +4,10 @@ sealed class Screens(
     val route: String
 ) {
 
-    object Start: Screens(ROUTE_START)
-    object Main: Screens(ROUTE_MAIN)
-    object Add: Screens(ROUTE_ADD)
-    object Note: Screens(ROUTE_NOTE)
+    object StartScreen: Screens(ROUTE_START)
+    object MainScreen: Screens(ROUTE_MAIN)
+    object AddScreen: Screens(ROUTE_ADD)
+    object NoteScreen: Screens(ROUTE_NOTE)
 
     companion object {
         const val ROUTE_START = "start"
