@@ -7,45 +7,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kz.nkaiyrken.notesapp2023.db.room.AppRoomDatabase
+import kz.nkaiyrken.notesapp2023.db.room.dao.NoteRoomDao
+import kz.nkaiyrken.notesapp2023.db.room.repository.RoomRepository
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
+import kz.nkaiyrken.notesapp2023.utils.REPOSITORY
 import kz.nkaiyrken.notesapp2023.utils.TYPE_FIREBASE
 import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 import java.lang.IllegalArgumentException
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    init {
-        Log.d("test viewmodel", "MainViewModel created")
-    }
+    val context = application
 
-    private val dbTypeLivedata = MutableLiveData<String>()
-
-    private val _notesLivedata = MutableLiveData<List<Note>>()
-    val notesLivedata: LiveData<List<Note>> = _notesLivedata
-
-    private val notes = mutableListOf<Note>().apply {
-        repeat(10) {
-            this.add(
-                Note(
-                    id = it,
-                    description = "Some text $it",
-                    title = "Title $it"
-                )
-            )
-        }
-    }
-
-    fun initData(type: String) {
-        dbTypeLivedata.value = type
-        _notesLivedata.value = when (type) {
+    fun initData(type: String, onSuccess: () -> Unit) {
+        when (type) {
             TYPE_ROOM -> {
-                notes
-            }
-            TYPE_FIREBASE -> {
-                listOf()
-            }
-            else -> {
-                listOf()
+                val dao = AppRoomDatabase.getInstance(context = context).getRoomDao()
+                REPOSITORY = RoomRepository(dao)
+                onSuccess()
             }
         }
     }

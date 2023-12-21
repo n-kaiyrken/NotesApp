@@ -11,5 +11,5 @@ data class NoteDBModel(
     @ColumnInfo
     val title: String,
     @ColumnInfo
-    val desciption: String,
+    val description: String,
 )

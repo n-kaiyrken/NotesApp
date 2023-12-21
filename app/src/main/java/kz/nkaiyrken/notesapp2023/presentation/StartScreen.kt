@@ -47,8 +47,9 @@ fun StartScreen(
                     .width(200.dp)
                     .padding(vertical = 8.dp),
                 onClick = {
-                    viewModel.initData(TYPE_ROOM)
-                    navHostController.navigate(route = Screens.MainScreen.route)
+                    viewModel.initData(TYPE_ROOM) {
+                        navHostController.navigate(route = Screens.MainScreen.route)
+                    }
                 }
             ) {
                 Text(text = "Room database")
@@ -58,8 +59,9 @@ fun StartScreen(
                     .width(200.dp)
                     .padding(vertical = 8.dp),
                 onClick = {
-                    viewModel.initData(TYPE_FIREBASE)
-                    navHostController.navigate(route = Screens.MainScreen.route)
+                    viewModel.initData(TYPE_FIREBASE) {
+                        navHostController.navigate(route = Screens.MainScreen.route)
+                    }
                 }
             ) {
                 Text(text = "Firebase database")
