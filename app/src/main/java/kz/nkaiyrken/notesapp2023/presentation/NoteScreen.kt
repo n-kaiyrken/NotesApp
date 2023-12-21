@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Card
-import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +46,7 @@ fun NoteScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = note.text,
+            text = note.description,
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colors.onSecondary,
         )

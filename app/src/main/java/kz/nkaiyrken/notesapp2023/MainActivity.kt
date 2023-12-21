@@ -12,14 +12,20 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kz.nkaiyrken.notesapp2023.navigation.AppNavGraph
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NotesApp2023Theme {
+
+                val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(application))
+
                 Scaffold (
                     topBar = {
                         TopAppBar(
@@ -36,7 +42,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        AppNavGraph(paddingValues)
+
+                        AppNavGraph(paddingValues, viewModel)
                     }
                 }
             }
