@@ -1,5 +1,6 @@
 package kz.nkaiyrken.notesapp2023.presentation
 
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,14 +27,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kz.nkaiyrken.notesapp2023.MainViewModel
+import kz.nkaiyrken.notesapp2023.domain.entity.Note
 import kz.nkaiyrken.notesapp2023.navigation.Screens
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 
 @Composable
-fun AddScreen(navHostController: NavHostController) {
+fun AddScreen(
+    navHostController: NavHostController,
+    viewModel: MainViewModel
+) {
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var isButtonEnabled by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -52,20 +60,31 @@ fun AddScreen(navHostController: NavHostController) {
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = title,
-            onValueChange = { title = it },
-            label = { Text("Title") }
+            onValueChange = {
+                title = it
+                isButtonEnabled = title.isNotEmpty() && description.isNotEmpty()
+            },
+            label = { Text("Title") },
+            isError = title.isEmpty()
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = description,
-            onValueChange = { description = it },
-            label = { Text("Description") }
+            onValueChange = {
+                description = it
+                isButtonEnabled = title.isNotEmpty() && description.isNotEmpty()
+            },
+            label = { Text("Description") },
+            isError = description.isEmpty()
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                navHostController.navigate(Screens.MainScreen.route)
-            }
+                viewModel.addNoteToRoom(Note(title = title, description = description)) {
+                    navHostController.navigate(Screens.MainScreen.route)
+                }
+            },
+            enabled = isButtonEnabled
         ) {
             Text(
                 text = "Save",
@@ -79,6 +98,9 @@ fun AddScreen(navHostController: NavHostController) {
 @Preview(showBackground = true)
 fun AddScreenPreview() {
     NotesApp2023Theme {
-        AddScreen(navHostController = rememberNavController())
+        AddScreen(
+            navHostController = rememberNavController(),
+            MainViewModel(LocalContext.current as Application)
+        )
     }
 }

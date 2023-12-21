@@ -30,7 +30,10 @@ fun AppNavGraph(
                 )
         }
         composable(route = Screens.AddScreen.route) {
-            AddScreen(navHostController = navigationState.navHostController)
+            AddScreen(
+                navHostController = navigationState.navHostController,
+                viewModel = viewModel
+            )
         }
         composable(route = Screens.MainScreen.route) {
             MainScreen(

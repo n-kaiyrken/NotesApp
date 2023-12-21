@@ -42,6 +42,8 @@ fun MainScreen(
     viewModel: MainViewModel
 ) {
 
+    val notes by viewModel.getAllNotes().observeAsState(listOf())
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -62,15 +64,15 @@ fun MainScreen(
             //contentPadding = PaddingValues(all = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-//            items(
-//                items = notes,
-//                key = { it.id }
-//            ) {
-//                NoteCard(
-//                    note = it,
-//                    navHostController = navHostController
-//                )
-//            }
+            items(
+                items = notes,
+                key = { it.id }
+            ) {
+                NoteCard(
+                    note = it,
+                    navHostController = navHostController
+                )
+            }
         }
     }
 }

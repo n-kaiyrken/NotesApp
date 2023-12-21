@@ -48,6 +48,7 @@ fun StartScreen(
                     .padding(vertical = 8.dp),
                 onClick = {
                     viewModel.initData(TYPE_ROOM) {
+                        viewModel.getAllNotes()
                         navHostController.navigate(route = Screens.MainScreen.route)
                     }
                 }
