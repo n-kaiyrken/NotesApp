@@ -8,9 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.R
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
-import kz.nkaiyrken.notesapp2023.navigation.Screens
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 
 @Composable
@@ -44,46 +44,62 @@ fun NoteScreen(
     var title by remember { mutableStateOf(note.title) }
     var description by rememberSaveable { mutableStateOf(note.description) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = 50.dp,
-                bottom = 10.dp,
-                start = 10.dp,
-                end = 10.dp
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            modifier = Modifier.padding(start = 10.dp),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                },
+                backgroundColor = Color.White,
+                contentColor = MaterialTheme.colors.primary,
             )
+        }
     ) {
-//        Text(
-//            text = note.title,
-//            modifier = Modifier.fillMaxWidth(),
-//            color = Color.Black,
-//            fontWeight = FontWeight.Bold,
-//            textAlign = TextAlign.Center,
-//            fontSize = 30.sp
-//        )
-        TextField(
-            value = title,
-            onValueChange = { title = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.title)) },
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            value = description,
-            onValueChange = { description = it },
-            modifier = Modifier.fillMaxSize(),
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = 10.dp,
+                    bottom = 10.dp,
+                    start = 10.dp,
+                    end = 10.dp
+                )
+        ) {
+            TextField(
+                value = title,
+                onValueChange = { title = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.title)) },
+                singleLine = true
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(20.dp)
+                    .padding(it)
+            )
+            TextField(
+                value = description,
+                onValueChange = { description = it },
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
     BackHandler {
         if (note.id == 0) {
-            if (title.isNotEmpty() || description.isNotEmpty())
+            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
                 viewModel.addNoteToRoom(Note(title = title, description = description)) {
 
                 }
         } else {
-            if (title.isNotEmpty() || description.isNotEmpty())
+            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
                 viewModel.updateNote(Note(id = note.id, title = title, description = description))
             else viewModel.deleteNote(note = note)
         }

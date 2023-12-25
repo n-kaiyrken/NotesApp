@@ -33,14 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import kz.nkaiyrken.notesapp2023.MainViewModel
-import kz.nkaiyrken.notesapp2023.MainViewModelFactory
 import kz.nkaiyrken.notesapp2023.R
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
-import kz.nkaiyrken.notesapp2023.navigation.Screens
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -113,7 +108,12 @@ fun NoteCard(
             },
         elevation = 6.dp
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        ) {
             Text(
                 text = note.title,
                 fontWeight = FontWeight.Black
