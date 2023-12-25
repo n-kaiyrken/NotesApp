@@ -8,11 +8,12 @@ import androidx.room.Query
 import androidx.room.Update
 import kz.nkaiyrken.notesapp2023.db.model.NoteDBModel
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
+import kz.nkaiyrken.notesapp2023.utils.Constants
 
 @Dao
 interface NoteRoomDao {
 
-    @Query("SELECT * FROM notes_table")
+    @Query("SELECT * FROM ${Constants.Keys.NOTES_TABLE}")
     fun getAllNotes(): LiveData<List<Note>>
 
     @Insert

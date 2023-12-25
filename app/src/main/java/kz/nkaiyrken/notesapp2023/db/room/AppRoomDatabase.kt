@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import kz.nkaiyrken.notesapp2023.db.model.NoteDBModel
 import kz.nkaiyrken.notesapp2023.db.room.dao.NoteRoomDao
+import kz.nkaiyrken.notesapp2023.utils.Constants
 
 @Database(entities = [NoteDBModel::class], version = 1)
 abstract class AppRoomDatabase : RoomDatabase() {
@@ -22,7 +23,7 @@ abstract class AppRoomDatabase : RoomDatabase() {
                 INSTANCE = Room.databaseBuilder(
                     context,
                     AppRoomDatabase::class.java,
-                    name = "notes_database"
+                    name = Constants.Keys.NOTES_DATABASE
                 ).build()
                 INSTANCE as AppRoomDatabase
             } else INSTANCE as AppRoomDatabase

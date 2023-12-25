@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                Text(text = "Notes App")
+                                Text(text = getString(R.string.notes_app))
                             },
                             backgroundColor = Color.Blue,
                             contentColor = Color.White,

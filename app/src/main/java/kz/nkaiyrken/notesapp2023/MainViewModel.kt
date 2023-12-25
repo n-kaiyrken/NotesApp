@@ -52,6 +52,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun updateNote(note: Note) {
+        viewModelScope.launch(Dispatchers.IO) {
+            REPOSITORY.update(note = mapper.mapNoteToNoteDBModel(note)) {
+
+            }
+        }
+    }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch(Dispatchers.IO) {
+            REPOSITORY.delete(note = mapper.mapNoteToNoteDBModel(note)) {
+
+            }
+        }
+    }
 }
 
 class MainViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

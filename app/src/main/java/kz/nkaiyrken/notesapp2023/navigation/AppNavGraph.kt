@@ -2,8 +2,11 @@ package kz.nkaiyrken.notesapp2023.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.google.gson.Gson
 import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.MainViewModelFactory
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
@@ -18,33 +21,66 @@ fun AppNavGraph(
     viewModel: MainViewModel
 ) {
     val navigationState = rememberNavigationState()
-    
+
     NavHost(
         navController = navigationState.navHostController,
         startDestination = Screens.ROUTE_START
     ) {
         composable(route = Screens.StartScreen.route) {
             StartScreen(
-                navHostController = navigationState.navHostController,
-                viewModel = viewModel
-                )
+                viewModel = viewModel,
+                onRoomButtonClickListener = {
+                    navigationState.navigateTo(route = Screens.MainScreen.route)
+                },
+                onFirebaseButtonClickListener = {
+                    navigationState.navigateTo(route = Screens.MainScreen.route)
+                },
+            )
         }
         composable(route = Screens.AddScreen.route) {
             AddScreen(
-                navHostController = navigationState.navHostController,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onSaveButtonClickListener = {
+                    navigationState.navigateTo(Screens.MainScreen.route)
+                }
             )
         }
         composable(route = Screens.MainScreen.route) {
             MainScreen(
-                navHostController = navigationState.navHostController,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onFABClickListener = { navigationState.navigateTo(Screens.NoteScreen.ROUTE_FOR_ARGS) },
+                onNoteClickListener = {
+                    navigationState.navigateTo(
+                        Screens.NoteScreen.getRouteWithArgs(
+                            it
+                        )
+                    )
+                },
             )
         }
-        composable(route = Screens.NoteScreen.route) {
+        composable(
+            route = Screens.NoteScreen.route,
+            arguments = listOf(
+                navArgument(name = Screens.KEY_NOTE) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val noteJson = backStackEntry.arguments?.getString(Screens.KEY_NOTE) ?: ""
+            val note = Gson().fromJson(noteJson, Note::class.java)
             NoteScreen(
-                navHostController = navigationState.navHostController,
-                note = Note(1, "Text text text text text text", "Note 1")
+                note = note,
+                viewModel = viewModel,
+                onBackPressed = { navigationState.navigateTo(Screens.MainScreen.route) }
+            )
+        }
+        composable(
+            route = Screens.NoteScreen.ROUTE_FOR_ARGS,
+        ) {
+            NoteScreen(
+                note = Note(),
+                viewModel = viewModel,
+                onBackPressed = { navigationState.navigateTo(Screens.MainScreen.route) }
             )
         }
     }

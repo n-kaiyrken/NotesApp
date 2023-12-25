@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.MainViewModelFactory
+import kz.nkaiyrken.notesapp2023.R
 import kz.nkaiyrken.notesapp2023.navigation.Screens
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 import kz.nkaiyrken.notesapp2023.utils.TYPE_FIREBASE
@@ -27,8 +29,9 @@ import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 
 @Composable
 fun StartScreen(
-    navHostController: NavHostController,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    onRoomButtonClickListener: () -> Unit,
+    onFirebaseButtonClickListener: () -> Unit,
 ) {
 
     Scaffold(
@@ -41,7 +44,7 @@ fun StartScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = "What will we use?")
+            Text(text = stringResource(R.string.what_will_we_use))
             Button(
                 modifier = Modifier
                     .width(200.dp)
@@ -49,11 +52,11 @@ fun StartScreen(
                 onClick = {
                     viewModel.initData(TYPE_ROOM) {
                         viewModel.getAllNotes()
-                        navHostController.navigate(route = Screens.MainScreen.route)
+                        onRoomButtonClickListener()
                     }
                 }
             ) {
-                Text(text = "Room database")
+                Text(text = stringResource(R.string.room_database))
             }
             Button(
                 modifier = Modifier
@@ -61,11 +64,11 @@ fun StartScreen(
                     .padding(vertical = 8.dp),
                 onClick = {
                     viewModel.initData(TYPE_FIREBASE) {
-                        navHostController.navigate(route = Screens.MainScreen.route)
+                        onFirebaseButtonClickListener()
                     }
                 }
             ) {
-                Text(text = "Firebase database")
+                Text(text = stringResource(R.string.firebase_database))
             }
         }
     }
@@ -76,8 +79,9 @@ fun StartScreen(
 fun StartScreenPreview() {
     NotesApp2023Theme {
         StartScreen(
-            navHostController = rememberNavController(),
-            viewModel = MainViewModel(LocalContext.current as Application)
+            viewModel = MainViewModel(LocalContext.current as Application),
+            onRoomButtonClickListener = {},
+            onFirebaseButtonClickListener = {}
         )
     }
 }

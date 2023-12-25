@@ -16,7 +16,7 @@ class Mapper {
     fun mapNoteToNoteDBModel(note: Note): NoteDBModel {
         return NoteDBModel(
             id = note.id,
-            title = note.title,
+            title = if (note.title.isEmpty()) "Запись {${DateUtils.getFormattedDate()}}" else note.title,
             description = note.description
         )
     }
