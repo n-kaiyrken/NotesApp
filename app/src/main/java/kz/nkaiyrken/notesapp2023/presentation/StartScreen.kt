@@ -6,69 +6,160 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import kz.nkaiyrken.notesapp2023.MainViewModel
-import kz.nkaiyrken.notesapp2023.MainViewModelFactory
 import kz.nkaiyrken.notesapp2023.R
-import kz.nkaiyrken.notesapp2023.navigation.Screens
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
+import kz.nkaiyrken.notesapp2023.utils.Constants
+import kz.nkaiyrken.notesapp2023.utils.EMAIL
+import kz.nkaiyrken.notesapp2023.utils.PASSWORD
 import kz.nkaiyrken.notesapp2023.utils.TYPE_FIREBASE
 import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun StartScreen(
     viewModel: MainViewModel,
     onRoomButtonClickListener: () -> Unit,
-    onFirebaseButtonClickListener: () -> Unit,
+    onSignInButtonClickListener: () -> Unit,
 ) {
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(text = stringResource(R.string.what_will_we_use))
-            Button(
-                modifier = Modifier
-                    .width(200.dp)
-                    .padding(vertical = 8.dp),
-                onClick = {
-                    viewModel.initData(TYPE_ROOM) {
-                        viewModel.getAllNotes()
-                        onRoomButtonClickListener()
+    val bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
+    var email by remember { mutableStateOf(Constants.Keys.EMPTY) }
+    var password by remember { mutableStateOf(Constants.Keys.EMPTY) }
+
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetElevation = 5.dp,
+        sheetShape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+        sheetContent = {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(all = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(R.string.log_in_to_firebase),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        label = { Text(text = stringResource(R.string.email)) },
+                        isError = email.isEmpty()
+                    )
+                    Column {
+                        OutlinedTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            singleLine = true,
+                            visualTransformation = PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            label = { Text(text = stringResource(R.string.password)) },
+                            isError = password.isEmpty() || password.length < 6
+                        )
+                        Text(
+                            text = stringResource(R.string.at_least_6_characters),
+                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium),
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                    Button(
+                        modifier = Modifier.padding(top = 16.dp),
+                        onClick = {
+                            EMAIL = email
+                            PASSWORD = password
+                            viewModel.initData(TYPE_FIREBASE) {
+                                onSignInButtonClickListener()
+                            }
+                        },
+                        enabled = email.isNotEmpty() && password.isNotEmpty()
+                    ) {
+                        Text(text = stringResource(R.string.sign_in))
                     }
                 }
-            ) {
-                Text(text = stringResource(R.string.room_database))
             }
-            Button(
+        }
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
                 modifier = Modifier
-                    .width(200.dp)
-                    .padding(vertical = 8.dp),
-                onClick = {
-                    viewModel.initData(TYPE_FIREBASE) {
-                        onFirebaseButtonClickListener()
-                    }
-                }
+                    .fillMaxSize()
+                    .padding(it),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                Text(text = stringResource(R.string.firebase_database))
+                Text(text = stringResource(R.string.what_will_we_use))
+                Button(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .padding(vertical = 8.dp),
+                    onClick = {
+                        viewModel.initData(TYPE_ROOM) {
+                            viewModel.getAllNotes()
+                            onRoomButtonClickListener()
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(R.string.room_database))
+                }
+                Button(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .padding(vertical = 8.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.show()
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(R.string.firebase_database))
+                }
             }
         }
     }
@@ -81,7 +172,7 @@ fun StartScreenPreview() {
         StartScreen(
             viewModel = MainViewModel(LocalContext.current as Application),
             onRoomButtonClickListener = {},
-            onFirebaseButtonClickListener = {}
+            onSignInButtonClickListener = {}
         )
     }
 }

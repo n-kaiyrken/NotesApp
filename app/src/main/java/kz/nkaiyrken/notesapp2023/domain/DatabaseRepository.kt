@@ -14,4 +14,8 @@ interface DatabaseRepository {
 
     suspend fun update(note: NoteDBModel, onSuccess: ()-> Unit)
 
+    fun signOut() {}
+
+    fun connectToFirebase(onSuccess: () -> Unit, onFail: (String) -> Unit) {}
+
 }

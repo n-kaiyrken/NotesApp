@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.google.gson.Gson
 import kz.nkaiyrken.notesapp2023.MainViewModel
-import kz.nkaiyrken.notesapp2023.MainViewModelFactory
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
 import kz.nkaiyrken.notesapp2023.presentation.AddScreen
 import kz.nkaiyrken.notesapp2023.presentation.MainScreen
@@ -32,7 +31,7 @@ fun AppNavGraph(
                 onRoomButtonClickListener = {
                     navigationState.navigateTo(route = Screens.MainScreen.route)
                 },
-                onFirebaseButtonClickListener = {
+                onSignInButtonClickListener = {
                     navigationState.navigateTo(route = Screens.MainScreen.route)
                 },
             )
