@@ -13,4 +13,6 @@ data class NoteDBModel(
     val title: String,
     @ColumnInfo
     val description: String,
+
+    val firebase_id: String = ""
 )
