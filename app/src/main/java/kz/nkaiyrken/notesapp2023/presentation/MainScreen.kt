@@ -130,7 +130,7 @@ fun NoteCard(
 fun NoteCardPreview() {
     NotesApp2023Theme {
         NoteCard(
-            note = Note(1, "Some text", "Some title"),
+            note = Note(),
             onNoteClickListener = {}
         )
     }

@@ -1,4 +1,4 @@
-package kz.nkaiyrken.notesapp2023.db.model
+package kz.nkaiyrken.notesapp2023.db.room.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,9 +10,7 @@ data class NoteDBModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo
-    val title: String,
+    val title: String = "",
     @ColumnInfo
-    val description: String,
-
-    val firebase_id: String = ""
+    val description: String = "",
 )

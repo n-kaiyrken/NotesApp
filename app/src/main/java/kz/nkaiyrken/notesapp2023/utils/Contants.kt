@@ -2,7 +2,6 @@ package kz.nkaiyrken.notesapp2023.utils
 
 import kz.nkaiyrken.notesapp2023.domain.DatabaseRepository
 
-const val TYPE_DATABASE = "type_database"
 const val TYPE_ROOM = "type_room"
 const val TYPE_FIREBASE = "type_firebase"
 const val FIREBASE_ID = "firebase_id"

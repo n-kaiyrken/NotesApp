@@ -80,7 +80,7 @@ fun StartScreen(
                     )
                     OutlinedTextField(
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = { email = it.trim() },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         label = { Text(text = stringResource(R.string.email)) },
@@ -89,7 +89,7 @@ fun StartScreen(
                     Column {
                         OutlinedTextField(
                             value = password,
-                            onValueChange = { password = it },
+                            onValueChange = { password = it.trim() },
                             singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

@@ -93,7 +93,7 @@ fun NoteScreen(
         }
     }
     BackHandler {
-        if (note.id == 0) {
+        if (note.id == "") {                                //Могут быть ошибки
             if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
                 viewModel.addNoteToRoom(Note(title = title, description = description)) {
 
@@ -113,7 +113,6 @@ fun NoteScreenPreview() {
     NotesApp2023Theme {
         NoteScreen(
             note = Note(
-                1,
                 "Note 1",
                 "Text text text text text text text text text text text text text"
             ),

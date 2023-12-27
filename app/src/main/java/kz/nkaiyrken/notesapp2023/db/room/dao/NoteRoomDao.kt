@@ -6,15 +6,14 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import kz.nkaiyrken.notesapp2023.db.model.NoteDBModel
-import kz.nkaiyrken.notesapp2023.domain.entity.Note
+import kz.nkaiyrken.notesapp2023.db.room.model.NoteDBModel
 import kz.nkaiyrken.notesapp2023.utils.Constants
 
 @Dao
 interface NoteRoomDao {
 
     @Query("SELECT * FROM ${Constants.Keys.NOTES_TABLE}")
-    fun getAllNotes(): LiveData<List<Note>>
+    fun getAllNotes(): LiveData<List<NoteDBModel>>
 
     @Insert
     suspend fun addNote(note: NoteDBModel)

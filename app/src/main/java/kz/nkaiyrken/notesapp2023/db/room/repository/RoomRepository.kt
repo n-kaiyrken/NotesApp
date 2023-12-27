@@ -1,27 +1,34 @@
 package kz.nkaiyrken.notesapp2023.db.room.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
-import kz.nkaiyrken.notesapp2023.db.model.NoteDBModel
-import kz.nkaiyrken.notesapp2023.db.room.dao.NoteRoomDao
+import kz.nkaiyrken.notesapp2023.db.room.AppRoomDatabase
 import kz.nkaiyrken.notesapp2023.domain.DatabaseRepository
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
+import kz.nkaiyrken.notesapp2023.utils.Mapper
 
-class RoomRepository(private val noteRoomDao: NoteRoomDao): DatabaseRepository {
-    override val readAll: LiveData<List<Note>>
-        get() = noteRoomDao.getAllNotes()
+class RoomRepository(
+    private val mapper: Mapper,
+    context: Context
+) : DatabaseRepository {
 
-    override suspend fun create(note: NoteDBModel, onSuccess: () -> Unit) {
-        noteRoomDao.addNote(note = note)
+    val noteRoomDao = AppRoomDatabase.getInstance(context = context).getRoomDao()
+
+    override fun readAll(): LiveData<List<Note>> =
+        mapper.mapLiveDataNoteDBModelToNote(noteRoomDao.getAllNotes())
+
+    override suspend fun create(note: Note, onSuccess: () -> Unit) {
+        noteRoomDao.addNote(note = mapper.mapNoteToNoteDBModel(note))
         onSuccess()
     }
 
-    override suspend fun delete(note: NoteDBModel, onSuccess: () -> Unit) {
-        noteRoomDao.deleteNote(note = note)
+    override suspend fun delete(note: Note, onSuccess: () -> Unit) {
+        noteRoomDao.deleteNote(note = mapper.mapNoteToNoteDBModel(note))
         onSuccess()
     }
 
-    override suspend fun update(note: NoteDBModel, onSuccess: () -> Unit) {
-        noteRoomDao.updateNote(note = note)
+    override suspend fun update(note: Note, onSuccess: () -> Unit) {
+        noteRoomDao.updateNote(note = mapper.mapNoteToNoteDBModel(note))
         onSuccess()
     }
 }
