@@ -8,10 +8,8 @@ import com.google.firebase.database.database
 import kz.nkaiyrken.notesapp2023.domain.DatabaseRepository
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
 import kz.nkaiyrken.notesapp2023.utils.Constants
-import kz.nkaiyrken.notesapp2023.utils.EMAIL
 import kz.nkaiyrken.notesapp2023.utils.FIREBASE_ID
 import kz.nkaiyrken.notesapp2023.utils.Mapper
-import kz.nkaiyrken.notesapp2023.utils.PASSWORD
 
 class FirebaseRepository(
     private val mapper: Mapper
@@ -63,11 +61,16 @@ class FirebaseRepository(
         mAuth.signOut()
     }
 
-    override fun connectToFirebase(onSuccess: () -> Unit, onFail: (String) -> Unit) {
-        mAuth.signInWithEmailAndPassword(EMAIL, PASSWORD)
+    override fun connectToFirebase(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        mAuth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener {
-                mAuth.createUserWithEmailAndPassword(EMAIL, PASSWORD)
+                mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener { onSuccess() }
                     .addOnFailureListener { onFail(it.message.toString()) }
             }

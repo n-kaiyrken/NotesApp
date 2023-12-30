@@ -15,6 +15,11 @@ interface DatabaseRepository {
 
     fun signOut() {}
 
-    fun connectToFirebase(onSuccess: () -> Unit, onFail: (String) -> Unit) {}
+    fun connectToFirebase(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {}
 
 }

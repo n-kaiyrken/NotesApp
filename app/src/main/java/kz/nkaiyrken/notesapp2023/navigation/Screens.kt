@@ -10,7 +10,6 @@ sealed class Screens(
 
     object StartScreen: Screens(ROUTE_START)
     object MainScreen: Screens(ROUTE_MAIN)
-    object AddScreen: Screens(ROUTE_ADD)
     object NoteScreen: Screens(ROUTE_NOTE) {
         const val ROUTE_FOR_ARGS = "note"
 
@@ -25,7 +24,6 @@ sealed class Screens(
 
         const val ROUTE_START = "start"
         const val ROUTE_MAIN = "main"
-        const val ROUTE_ADD = "add"
         const val ROUTE_NOTE = "note/{$KEY_NOTE}"
     }
 }

@@ -25,6 +25,7 @@ class Mapper {
 
     fun mapNoteToNoteDBModel(note: Note): NoteDBModel {
         return NoteDBModel(
+            id = if (note.id != "") note.id.toInt() else 0,
             title = note.title,
             description = note.description
         )

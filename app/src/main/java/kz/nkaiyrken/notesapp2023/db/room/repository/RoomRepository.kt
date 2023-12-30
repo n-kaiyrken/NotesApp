@@ -12,7 +12,7 @@ class RoomRepository(
     context: Context
 ) : DatabaseRepository {
 
-    val noteRoomDao = AppRoomDatabase.getInstance(context = context).getRoomDao()
+    private val noteRoomDao = AppRoomDatabase.getInstance(context = context).getRoomDao()
 
     override fun readAll(): LiveData<List<Note>> =
         mapper.mapLiveDataNoteDBModelToNote(noteRoomDao.getAllNotes())

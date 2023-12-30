@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kz.nkaiyrken.notesapp2023.navigation.AppNavGraph
+import kz.nkaiyrken.notesapp2023.navigation.rememberNavigationState
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 
 class MainActivity : ComponentActivity() {
@@ -20,13 +21,14 @@ class MainActivity : ComponentActivity() {
             NotesApp2023Theme {
 
                 val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(application))
+                val navigationState = rememberNavigationState()
 
                 Scaffold {paddingValues ->
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        AppNavGraph(paddingValues, viewModel)
+                        AppNavGraph(paddingValues, viewModel, navigationState)
                     }
                 }
             }

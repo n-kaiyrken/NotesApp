@@ -37,6 +37,9 @@ import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.R
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -115,7 +118,7 @@ fun NoteCard(
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         ) {
             Text(
-                text = note.title,
+                text = generateNoteTitle(note),
                 fontWeight = FontWeight.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -145,5 +148,13 @@ fun MainScreenPreview() {
             onNoteClickListener = {},
             onFABClickListener = {}
         )
+    }
+}
+
+fun generateNoteTitle(note: Note): String {
+    val currentDate = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
+
+    return note.title.ifBlank {
+        "Текстовая записка $currentDate"
     }
 }

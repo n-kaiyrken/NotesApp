@@ -9,7 +9,6 @@ import androidx.navigation.navArgument
 import com.google.gson.Gson
 import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.domain.entity.Note
-import kz.nkaiyrken.notesapp2023.presentation.AddScreen
 import kz.nkaiyrken.notesapp2023.presentation.MainScreen
 import kz.nkaiyrken.notesapp2023.presentation.NoteScreen
 import kz.nkaiyrken.notesapp2023.presentation.StartScreen
@@ -17,9 +16,9 @@ import kz.nkaiyrken.notesapp2023.presentation.StartScreen
 @Composable
 fun AppNavGraph(
     paddingValues: PaddingValues,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    navigationState: NavigationState
 ) {
-    val navigationState = rememberNavigationState()
 
     NavHost(
         navController = navigationState.navHostController,
@@ -28,20 +27,9 @@ fun AppNavGraph(
         composable(route = Screens.StartScreen.route) {
             StartScreen(
                 viewModel = viewModel,
-                onRoomButtonClickListener = {
+                openMainScreen = {
                     navigationState.navigateTo(route = Screens.MainScreen.route)
                 },
-                onSignInButtonClickListener = {
-                    navigationState.navigateTo(route = Screens.MainScreen.route)
-                },
-            )
-        }
-        composable(route = Screens.AddScreen.route) {
-            AddScreen(
-                viewModel = viewModel,
-                onSaveButtonClickListener = {
-                    navigationState.navigateTo(Screens.MainScreen.route)
-                }
             )
         }
         composable(route = Screens.MainScreen.route) {
@@ -70,7 +58,7 @@ fun AppNavGraph(
             NoteScreen(
                 note = note,
                 viewModel = viewModel,
-                onBackPressed = { navigationState.navigateTo(Screens.MainScreen.route) }
+                openMainScreen = { navigationState.navigateTo(Screens.MainScreen.route) }
             )
         }
         composable(
@@ -79,7 +67,7 @@ fun AppNavGraph(
             NoteScreen(
                 note = Note(),
                 viewModel = viewModel,
-                onBackPressed = { navigationState.navigateTo(Screens.MainScreen.route) }
+                openMainScreen = { navigationState.navigateTo(Screens.MainScreen.route) }
             )
         }
     }

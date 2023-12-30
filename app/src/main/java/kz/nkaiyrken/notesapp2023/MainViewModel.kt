@@ -19,23 +19,31 @@ import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    val context = application
-    val mapper = Mapper()
+    private val context = application
+    private val mapper = Mapper()
 
     fun getAllNotes(): LiveData<List<Note>> {
         Log.d("checkData", "MainViewModel ${REPOSITORY.readAll().value}")
         return REPOSITORY.readAll()
     }
 
-    fun initData(type: String, onSuccess: () -> Unit) {
+    fun initData(
+        type: String,
+        email: String = "",
+        password: String = "",
+        onSuccess: () -> Unit
+    ) {
         when (type) {
             TYPE_ROOM -> {
                 REPOSITORY = RoomRepository(mapper = mapper, context = context)
                 onSuccess()
             }
+
             TYPE_FIREBASE -> {
                 REPOSITORY = FirebaseRepository(mapper = mapper)
                 REPOSITORY.connectToFirebase(
+                    email = email,
+                    password = password,
                     onSuccess = onSuccess,
                     onFail = { Log.d("checkData", "Error: $it") }
                 )
@@ -68,6 +76,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun onBackPressed(note: Note, title: String, description: String) {
+        if (note.id == "") {
+            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
+                addNoteToRoom(Note(title = title, description = description)) {
+
+                }
+        } else {
+            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
+                updateNote(Note(id = note.id, title = title, description = description))
+            else deleteNote(note = note)
+        }
+    }
+
+
 }
 
 class MainViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

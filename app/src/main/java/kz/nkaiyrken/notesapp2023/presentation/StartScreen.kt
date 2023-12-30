@@ -40,9 +40,7 @@ import kotlinx.coroutines.launch
 import kz.nkaiyrken.notesapp2023.MainViewModel
 import kz.nkaiyrken.notesapp2023.R
 import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
-import kz.nkaiyrken.notesapp2023.utils.Constants
-import kz.nkaiyrken.notesapp2023.utils.EMAIL
-import kz.nkaiyrken.notesapp2023.utils.PASSWORD
+import kz.nkaiyrken.notesapp2023.utils.EMPTY
 import kz.nkaiyrken.notesapp2023.utils.TYPE_FIREBASE
 import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 
@@ -50,74 +48,22 @@ import kz.nkaiyrken.notesapp2023.utils.TYPE_ROOM
 @Composable
 fun StartScreen(
     viewModel: MainViewModel,
-    onRoomButtonClickListener: () -> Unit,
-    onSignInButtonClickListener: () -> Unit,
+    openMainScreen: () -> Unit,
 ) {
 
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-    var email by remember { mutableStateOf(Constants.Keys.EMPTY) }
-    var password by remember { mutableStateOf(Constants.Keys.EMPTY) }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetElevation = 5.dp,
         sheetShape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
         sheetContent = {
-            Surface {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(all = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = stringResource(R.string.log_in_to_firebase),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it.trim() },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        label = { Text(text = stringResource(R.string.email)) },
-                        isError = email.isEmpty()
-                    )
-                    Column {
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = { password = it.trim() },
-                            singleLine = true,
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            label = { Text(text = stringResource(R.string.password)) },
-                            isError = password.isEmpty() || password.length < 6
-                        )
-                        Text(
-                            text = stringResource(R.string.at_least_6_characters),
-                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium),
-                            style = MaterialTheme.typography.caption,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
-                    Button(
-                        modifier = Modifier.padding(top = 16.dp),
-                        onClick = {
-                            EMAIL = email
-                            PASSWORD = password
-                            viewModel.initData(TYPE_FIREBASE) {
-                                onSignInButtonClickListener()
-                            }
-                        },
-                        enabled = email.isNotEmpty() && password.isNotEmpty()
-                    ) {
-                        Text(text = stringResource(R.string.sign_in))
-                    }
-                }
-            }
+            SignInBottomSheet(
+                viewModel = viewModel,
+                openMainScreen = openMainScreen,
+            )
         }
     ) {
         Scaffold(
@@ -137,8 +83,7 @@ fun StartScreen(
                         .padding(vertical = 8.dp),
                     onClick = {
                         viewModel.initData(TYPE_ROOM) {
-                            viewModel.getAllNotes()
-                            onRoomButtonClickListener()
+                            openMainScreen()
                         }
                     }
                 ) {
@@ -162,13 +107,74 @@ fun StartScreen(
 }
 
 @Composable
+fun SignInBottomSheet(
+    viewModel: MainViewModel,
+    openMainScreen: () -> Unit
+) {
+
+    var email by remember { mutableStateOf(EMPTY) }
+    var password by remember { mutableStateOf(EMPTY) }
+
+    Surface {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(all = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = stringResource(R.string.log_in_to_firebase),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it.trim() },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                label = { Text(text = stringResource(R.string.email)) },
+                isError = email.isEmpty()
+            )
+            Column {
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it.trim()},
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    label = { Text(text = stringResource(R.string.password)) },
+                    isError = password.isEmpty() || password.length < 6
+                )
+                Text(
+                    text = stringResource(R.string.at_least_6_characters),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium),
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            Button(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    viewModel.initData(TYPE_FIREBASE, email = email, password = password) {
+                        openMainScreen()
+                    }
+                },
+                enabled = password.isNotEmpty() && email.isNotEmpty()
+            ) {
+                Text(text = stringResource(R.string.sign_in))
+            }
+        }
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 fun StartScreenPreview() {
     NotesApp2023Theme {
         StartScreen(
             viewModel = MainViewModel(LocalContext.current as Application),
-            onRoomButtonClickListener = {},
-            onSignInButtonClickListener = {}
+            openMainScreen = {}
         )
     }
 }

@@ -38,7 +38,7 @@ import kz.nkaiyrken.notesapp2023.ui.theme.NotesApp2023Theme
 fun NoteScreen(
     note: Note,
     viewModel: MainViewModel,
-    onBackPressed: () -> Unit,
+    openMainScreen: () -> Unit,
 ) {
 
     var title by remember { mutableStateOf(note.title) }
@@ -49,7 +49,14 @@ fun NoteScreen(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
+                    IconButton(onClick = {
+                        viewModel.onBackPressed(
+                            note = note,
+                            title = title,
+                            description = description
+                        )
+                        openMainScreen()
+                    }) {
                         Icon(
                             Icons.Filled.ArrowBack,
                             modifier = Modifier.padding(start = 10.dp),
@@ -93,17 +100,8 @@ fun NoteScreen(
         }
     }
     BackHandler {
-        if (note.id == "") {                                //Могут быть ошибки
-            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
-                viewModel.addNoteToRoom(Note(title = title, description = description)) {
-
-                }
-        } else {
-            if (title.trim().isNotEmpty() || description.trim().isNotEmpty())
-                viewModel.updateNote(Note(id = note.id, title = title, description = description))
-            else viewModel.deleteNote(note = note)
-        }
-        onBackPressed()
+        viewModel.onBackPressed(note = note, title = title, description = description)
+        openMainScreen()
     }
 }
 
@@ -117,7 +115,7 @@ fun NoteScreenPreview() {
                 "Text text text text text text text text text text text text text"
             ),
             MainViewModel(LocalContext.current as Application),
-            onBackPressed = {}
+            openMainScreen = {}
         )
     }
 }
