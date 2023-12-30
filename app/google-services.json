@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "831660301455",
+    "project_id": "notesapp2023-7d3d8",
+    "storage_bucket": "notesapp2023-7d3d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831660301455:android:d9cd604ca706781336a4fa",
+        "android_client_info": {
+          "package_name": "kz.nkaiyrken.notesapp2023"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA86gwSO7NXjWJbXqjYx8--4ea3zpnEXtQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
